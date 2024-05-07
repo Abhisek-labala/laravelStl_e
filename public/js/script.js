@@ -432,26 +432,35 @@ $(document).ready(function () {
 
 $(document).ready(function(){
     $('#exampleModal').modal('show');
-    $('#updatePasswordForm').on('submit', function(e){
+    $('#updateform').on('submit', function(e){
         e.preventDefault(); // Prevent form submission
-        var formData = $(this).serialize(); // Serialize form data
+        var formData = new FormData(this);
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+        // Append CSRF token to the formData object
+        formData.append('_token', csrfToken); 
+        
         $.ajax({
             type: 'POST',
-            url: $(this).attr('action'),
+            url: '/update',
             data: formData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
             success: function(response){
-                // Handle success response
-                window.location.href = response.redirect_url; // Redirect to login page or any other page
+                window.location.href = response.redirect_url;
             },
             error: function(xhr, status, error){
                 // Handle error response
-                var errorMessage = xhr.responseJSON.message || 'An error occurred.';
+                var errorMessage = xhr.responseJSON.error || 'An error occurred.';
+                // Show error message
                 $('#errorMessage').text(errorMessage).show();
             }
         });
     });
-  });
+});
+
+
 
 
   // Create toast instance

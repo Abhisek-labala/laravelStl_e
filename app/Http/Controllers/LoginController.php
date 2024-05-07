@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
+
 
 class LoginController extends Controller
 {
@@ -22,7 +25,7 @@ class LoginController extends Controller
                 $demopassword = "password"; // This should be hashed in production
 
                 if (password_verify($demopassword, $user->password)) {
-                    return redirect()->route('dashboard');
+                    return redirect()->route('update');
                 } else {
                     return redirect()->route('dashboard');
                 }
@@ -32,6 +35,12 @@ class LoginController extends Controller
         } else {
             return redirect()->back()->with('error', 'Invalid credentials');
         }
+    }
+    public function logout(Request $request)
+    {
+        $request->session()->flush();
+        // Redirect to login page
+        return redirect('/')->with('success', 'You have been logged out.');
     }
 
     function updatePassword(Request $request){
@@ -49,18 +58,19 @@ class LoginController extends Controller
                 $result = DB::table('regforms')
                     ->where('username', $username)
                     ->update(['password' => $phash]);
-
-                if ($result) {
-                    return redirect()->route('login', ['password_updated' => true, 'username' => $username]);
-                } else {
-                    return back()->with('error', 'Failed to update password.');
-                }
+                    if ($result) {
+                        // Store information in session
+                        Session::flash('password_updated', true);
+                        Session::flash('username', $username);
+                        return Response::json(['redirect_url' => url('/')]);
+                    } else {
+                        return Response::json(['error' => 'Failed to update password.'], 500);
+                    }
             } else {
-                return back()->with('error', 'Passwords do not match.');
+                return Response::json(['error' => 'Passwords do not match.'], 400);
             }
         }
 
-        return view('password.update');
-
-    }
+        return view('update');
+        }
 }

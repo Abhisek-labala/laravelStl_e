@@ -34,10 +34,7 @@ Route::get('/signup',function()
 {
     return view('signup');
 });
-Route::get('/update',function()
-{
-    return view('update');
-});
+
 Route::get('/dashboard',function()
 {
     return view('dashboard');
@@ -56,14 +53,17 @@ Route::post('/getCountries',[mainController::class,'getCountries']);
 Route::post('/updateData',[mainController::class,'updateData']);
 Route::post('/deleteData/{id}',[mainController::class,'deleteData']);
 
-Route::post('/update',[loginController::class,'updatePassword'])->name('update');
 Route::get('/dashboard',[dashboardController::class,'dashboard'])->name('dashboard');
 
-Route::get('/logout',function()
-{
-    return view('login');
-});
-Route::get('/error',function()
-{
+// Route::get('/logout',function()
+// {
+//     return view('login');
+// });
+Route::get('/error_page', function () {
     return view('error_page');
-});
+})->name('error_page');
+
+Route::get('/logout',[loginController::class,'logout'])->name('logout');
+
+Route::view('/update', 'update');
+Route::post('/update', [LoginController::class, 'updatePassword'])->name('update');

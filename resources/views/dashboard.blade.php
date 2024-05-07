@@ -160,7 +160,7 @@
                         <a class="dropdown-item" href="#">Name: {{ $user['name'] }}</a>
                         <a class="dropdown-item" href="#">Email: {{ $user['email'] }}</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" id="logout" href="{{ url('/logout') }}">
+                        <a class="dropdown-item" id="logout" href="{{ route('logout') }}">
                             <button class="btn btn-block btn-danger btn-sm">Logout <i
                                     class="fa-solid fa-right-from-bracket fa-fw"></i></button>
                         </a>
@@ -169,11 +169,11 @@
             </ul>
         </div>
     </nav>
-    <main class="container-fluid">
+    <main class="container-fluid ">
     <section class="content mt-3">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
-        <div class="user">
+        <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box bg-info">
@@ -284,7 +284,7 @@
                       <h1 class="modal-title fs-5" id="staticBackdropLabel">Profile</h1>
                     </div>
                     <div class="modal-body text-center">
-                    <img src="{{ asset('/myproject/uploads/' . $user['image_url']) }}" class="profilepic" alt="Profile Picture">
+                    <img src="{{ asset('uploads/' . $user['image_url']) }}" class="profilepic" alt="Profile Picture">
 
                         <div class="text">
                           <h2>Name: {{ $user['name'] }}</h2>
@@ -314,7 +314,7 @@
 
     <footer class="mb-0 py-0 px-0" style="position: fixed; bottom: 0; width: 100%;">
         <div class="container-fluid">
-            <div class="user">
+            <div class="row">
                 <div class="col">&copy; Copyright reserved 2024
                     {{ $user['name'] }}
                 </div>

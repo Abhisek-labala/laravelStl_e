@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Update password</title>
   <!-- Bootstrap CSS -->
@@ -105,7 +106,7 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Update Password</h1>
       </div>
       <div class="modal-body">
-        <form action="{{ route('update', ['username' => request()->get('username')]) }}" method="post">
+        <form id="updateform"action="{{ route('update', ['username' => request()->get('username')]) }}" method="POST">
             @csrf
             <div class="mb-3">
               <label for="password" class="form-label">New Password</label>
