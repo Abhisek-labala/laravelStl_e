@@ -36,7 +36,8 @@ function fetchData() {
                     {
                         data: null, render: function (data, type, row) {
                             return '<button type="button" class="btn btn-primary m-1 editBtn" data-id="' + row.id + '">Edit</button>' +
-                                '<button type="button" class="btn btn-danger deleteBtn" data-id="' + row.id + '">Delete</button>';
+                                '<button type="button" class="btn btn-danger deleteBtn" data-id="' + row.id + '">Delete</button>'+
+                                '<button type="button" class="btn btn-info dbtn" data-id="' + row.id + '">Get Certificate</button>';
                         }
                     }
                 ]
@@ -177,11 +178,53 @@ function updateData(id, formData) {
 $(document).on('click', '.addBtn', function () {
     $('#registrationForm').attr('data-action', 'add');
     $('#registrationForm')[0].reset();
-    $('#imagepreview').empty();
-    $('#country')[0].selectize.clear();
-    $('#state')[0].selectize.clear();
-    $('#regModal').modal('show');
+    $('#imageprev').attr('src', '');
 
+    $('#regModal').modal('show');
+    
+          const forms = document.querySelectorAll('.needs-validation')
+      
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+          form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            var selectValue = $('#country').val();
+            if (!selectValue) {
+                $('#country').addClass('is-invalid');
+                event.preventDefault();
+            } else {
+                $('#country').removeClass('is-invalid');
+            }
+            
+            const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            console.log(checkboxes);
+            const errorDiv = form.querySelector('#feedback');
+            console.log(errorDiv);
+            
+            let checked = false;
+            console.log(checked);
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    checked = true;
+                    console.log(checked);
+                }
+            });
+            console.log(checked);
+            if (checked) {
+                errorDiv.style.display = 'none';
+            } else {
+                errorDiv.style.display = 'block';
+            }
+      
+            form.classList.add('was-validated')
+          }, false)
+        })
+    $("#registrationForm").removeClass("was-validated");
+    var selectize = $('#country')[0].selectize;
+    selectize.clear();
 })
 
 function insertData(formData) {
@@ -478,151 +521,50 @@ $(document).ready(function(){
       }, 3000); 
     }
   });
+  $(document).on('click', '.dbtn', function () {
+    var rowData = dataTable.row($(this).parents('tr')).data();
+    var requestData = {
+        Name: rowData.name, 
+        Rollno: rowData.id, 
 
-
-// $(document).ready(function () {
-//     // Function to handle file input change event
-//     $('#spreedsheetfile').change(function (event) {
-//         console.log("File input change event triggered.");
-
-//         // Get the selected file
-//         var file = $(this)[0].files[0];
-//         console.log("Selected file:", file);
-
-//         // Perform validation
-//         var validationResult = validateFile(file);
-//         console.log("Validation result:", validationResult);
-
-//         // Display validation result
-//         $('#validationMessages').text(validationResult);
-//         $('#excelTable').empty();
-//     });
-
-//     // Function to validate the selected file
-//     function validateFile(file) {
-//         if (!file) {
-//             return "No file selected.";
-//         }
-
-//         // Check file type
-//         var allowedTypes = ['xls', 'xlsx', 'csv'];
-//         var fileType = file.name.split('.').pop().toLowerCase();
-//         if (allowedTypes.indexOf(fileType) === -1) {
-//             return "Invalid file type. Only Excel (XLS, XLSX) and CSV files are allowed.";
-//         }
-
-//         // Check file size (example: limit to 5MB)
-//         var maxSize = 1 * 1024 * 1024; // 1MB in bytes
-//         if (file.size > maxSize) {
-//             return "File size exceeds the limit. Maximum size allowed is 1MB.";
-//         }
-
-//         // If all validations pass
-//         return "File is valid.";
-//     }
-
-//     // Function to handle button click for form submission
-//     $('#preview').click(function (event) {
-//         // Get the selected file
-//         var file = $('#spreedsheetfile')[0].files[0];
-//         console.log("Selected file:", file);
-
-//         // Perform validation
-//         var validationResult = validateFile(file);
-//         console.log("Validation result:", validationResult);
-
-//         // If file is valid, proceed with form submission via AJAX
-//         if (validationResult === "File is valid.") {
-//             var formData = new FormData($('#uploadForm')[0]);
-//             console.log(formData);
-
-//             $.ajax({
-//                 url: 'excelValidation',
-//                 type: 'post',
-//                 data: formData,
-//                 processData: false,
-//                 contentType: false,
-//                 success: function (response) {
-//                     // Parse JSON response
-//                     // var response = JSON.parse(response);
-//                     console.log(response);
-
-//                     // Construct human-readable format
-//                     var message = response.message + "\n";
-//                     if (response.errors) {
-//                         message += "Errors:\n";
-//                         response.errors.forEach(function (error) {
-//                             message += "- " + error + "\n";
-//                         });
-//                     }
-//                     if (response.emptyCells) {
-//                         message += "Empty Cells:\n";
-//                         response.emptyCells.forEach(function (emptyCell) {
-//                             message += "- " + emptyCell + "\n";
-//                         });
-//                     }
-
-//                     $('#validationMessages').text(message);
-
-//                     if (!response.errors && !response.emptyCells) {
-//                         if (response.tableHTML) {
-//                             $('#excelTable').html(response.tableHTML);
-//                         }
-//                     }
-//                 },
-//                 error: function (xhr, status, error) {
-//                     alert("Error occurred while uploading file. Please try again later.");
-//                     console.error(xhr.responseText);
-//                 }
-//             });
-//         } else {
-//             // Display validation result if file is invalid
-//             $('#validationMessages').text(validationResult);
-//             console.error("Validation error:", validationResult); // Log validation error
-//         }
-
-//         // Prevent default form submission behavior
-//         return false;
-//     });
-//     $('#spreedsheetfile').focus(function () {
-//         $('#validationMessages').empty();
-//         $('#excelTable').empty();
+    };
+    $(document).ajaxStart(function() {
+        $('#loadingIndicator').show(); 
+    });
     
-//     });
-//     $(document).on('click', '#uploadButton', function (e) {
-//         var file = $('#spreedsheetfile')[0].files[0];
-//         console.log("Selected file:", file);
-    
-//         // Perform validation
-//         var validationResult = validateFile(file);
-//         console.log("Validation result:", validationResult);
-    
-//         // If file is valid, proceed with form submission via AJAX
-//         if (validationResult === "File is valid.") {
-//             var formData = new FormData($('#uploadForm')[0]);
-//             console.log(formData);
-//             $.ajax({
-//                 url: 'excelUpload',
-//                 type: 'POST',
-//                 data: formData,
-//                 processData: false,
-//                 contentType: false,
-//                 success: function (response) {
-//                     // Parse JSON response
-//                     // var response = JSON.parse(response);
-//                     console.log(response);
-//                     $('#validationMessages').text(response);
-//                     window.location.href = "index.php";
-//                 },
-//                 error: function (jqXHR, textStatus, error) {
-//                     console.log("AJAX Error:", error);
-//                     var Errors =JSON.parse(error);
-//                     console.log(Errors);
-//                     $('#validationMessages').text(Errors);
-                    
-//                 }
-//             });
-//         }
-//     });
-// });    
+    $(document).ajaxStop(function() {
+        $('#loadingIndicator').hide();
+    });
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    $.ajax({
+        type: "POST",
+        url: "generate-certificate", 
+        data: { 
+            _token: csrfToken,
+            requestData: requestData
+        }, 
+        dataType: "json",
+        beforeSend: function() {
+            
+        },
+        success: function (response) {
+            console.log(response);
+            var pdfContent = atob(response.pdf_content);
+        
+            var decodedPdfContent = Uint8Array.from(atob(response.pdf_content), c => c.charCodeAt(0));
+        
+            var blob = new Blob([decodedPdfContent], { type: 'application/pdf' });
+        
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'certificate.pdf';
+            link.click();
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        },
+        complete: function() {
+        }
+    });
+});
 

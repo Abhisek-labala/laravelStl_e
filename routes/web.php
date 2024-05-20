@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\mainController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\dashboardController;
+use App\Http\Controllers\CertificateController;
 
 
 
@@ -67,3 +68,10 @@ Route::get('/logout',[loginController::class,'logout'])->name('logout');
 
 Route::view('/update', 'update');
 Route::post('/update', [LoginController::class, 'updatePassword'])->name('update');
+
+Route::post('/generate-certificate', [CertificateController::class, 'generate'])->name('generate-certificate');
+
+Route::get('/certificate',function()
+{
+    return view('certificate');
+});
