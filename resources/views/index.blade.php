@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css"> -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css">
@@ -294,8 +295,28 @@
                 </div>
             </div>
         </div>
+        
 
-        <div>
+        <!-- Preview Modal -->
+        <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Certificate Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                
+            </div>
+            <div class="modal-body">
+                <iframe id="previewIframe" frameborder="0" style="width: 100%; height: 500px;"></iframe>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info dbtn">Download PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
             <button type="button" class="btn btn-success mb-3 mt-3 addBtn" data-bs-toggle="modal"
                 data-bs-target="#regModal">ADD
@@ -329,6 +350,9 @@
                 </tbody>
             </table>
         </div>
+
+
+
         <script src=" {{asset('js/bootstrap.bundle.min.js')}}"></script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

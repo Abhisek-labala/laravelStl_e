@@ -4,10 +4,7 @@
 <head>
     <title>Certificate</title>
     <style>
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            z-index: -100;
-        }
+       
 
         .container {
             border: 10px solid black;
@@ -46,14 +43,6 @@
             margin-bottom: 10px;
         }
 
-        .qr-code {
-            margin-top: 5px;
-        }
-
-        img {
-            margin-right: 10px;
-            height: 50px;
-        }
 
         #logo {
             height: 8rem;
@@ -73,30 +62,23 @@
             color: brown;
         }
 
-        body::after {
-            content: '';
-            background-image: url('uploads/Bu.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.3;
-            top: 50%;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            position: absolute;
-            z-index: -1;
-        }
+        .modal-body {
+    position: relative; /* Ensure relative positioning for absolute content */
+}
 
-        /* Table styles */
-        table {
-            width: 100%;
-            font-size: 2rem;
-        }
+.modal-body::before {
+    content: '';
+    background-image: url('{{ asset("uploads/Bu.png") }}');
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.3; 
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+}
 
-        td {
-            padding: 5px;
-            text-align: center;
-        }
     </style>
 </head>
 
@@ -104,25 +86,26 @@
     <div class="container">
         <header>
             <div class="row1">
-                <h3>Serial No. ' . $rollno . '</h3>
-                <img src="' . $barcodePath . '" alt="Barcode">
+            <h3>Serial No. {{ $rollno }}</h3>
+
+                <img src=" {{ asset($barcodePath) }}" style="height: 40px;" alt="Barcode">
 
             </div>
             <div class="row">
                 <h3>Roll No. 64895646</h3>
-                <img src="' . $qrCodePath . '" alt="QR Code">
+                <img src="{{ asset( $qrCodePath ) }}" style="height: 70px; width: 70px;" alt="QR Code">
             </div>
         </header>
 
         <div class="main">
-            <img src="' . $image . '" style="height: 120px;" alt="image">
+            <img src="{{ asset('uploads/bu2.png') }}" style="height: 120px;" alt="image">
 
             <h1>BERHAMPUR UNIVERSITY</h1>
             <p>(ACCREDITED WITH "A" GRADE)</p>
         </div>
         <div class="maincontenet">
             <p>This is certify that</p>
-            <p>' . $name . '</p>
+            <p>{{ $name }}</p>
             <p>of Model degree college,Rayagada</p>
             <p>has Succesfully completed the requirements prescribed</p>
             <p>under the Regulation for </p>
@@ -140,7 +123,7 @@
                 <p>Date: June 16,2022</p>
             </div>
             <div class="footerrow2">
-                <img src="' . $sign . '" alt="signature">
+                <img src="{{ asset('uploads/signature.png') }}" style="height: 70px;"alt="signature">
                 <p>Vice-Chancellor</p>
             </div>
 
@@ -149,4 +132,3 @@
 </body>
 
 </html>
-

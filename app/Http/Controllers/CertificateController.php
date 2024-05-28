@@ -175,4 +175,58 @@ class CertificateController extends Controller
         // Return PDF content
         return response()->json(['pdf_content' => base64_encode($pdfContent)]);
     }
+    public function generatePreview(Request $request)
+{
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4',
+    ]);
+
+    $requestData = $request->requestData;
+
+    // Extracting data from the request
+    $rollno = $requestData['Rollno'];
+    $name = $requestData['Name'];
+
+    // Generating barcode
+    $generator = new BarcodeGeneratorPNG();
+    $barcodePath = public_path('uploads/barcode_' . $rollno . '.png');
+    $barcodeImage = $generator->getBarcode($rollno, $generator::TYPE_CODE_128);
+    file_put_contents($barcodePath, $barcodeImage);
+    if (file_exists($barcodePath)) {
+        \Log::info('Barcode image generated and saved successfully at: ' . $barcodePath);
+    } else {
+        \Log::error('Failed to generate barcode image');
+    }
+
+    // Generating QR code
+    $qrCode = Builder::create()
+        ->data($name)
+        ->size(200)
+        ->margin(10)
+        ->build();
+    $qrCodePath = public_path('uploads/qrcode_' . $rollno . '.png');
+    $qrCode->saveToFile($qrCodePath);
+    if (file_exists($qrCodePath)) {
+        \Log::info('QR code image generated and saved successfully at: ' . $qrCodePath);
+    } else {
+        \Log::error('Failed to generate QR code image');
+    }
+
+    // Data to pass to the view
+    $data = [
+        'rollno' => $rollno,
+        'name' => $name,
+        'barcodePath' => asset('uploads/barcode_' . $rollno . '.png'), // Update barcode path
+        'qrCodePath' => asset('uploads/qrcode_' . $rollno . '.png'),   // Update QR code path
+    ];
+
+    // Rendering the view
+    $html = view('certificate', $data)->render();
+
+    // Returning the HTML as JSON response
+    return response()->json(['html' => $html]);
+}
+
+    
 }

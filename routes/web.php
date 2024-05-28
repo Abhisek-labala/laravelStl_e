@@ -6,6 +6,7 @@ use App\Http\Controllers\mainController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\ExcelController;
 
 
 
@@ -75,3 +76,6 @@ Route::get('/certificate',function()
 {
     return view('certificate');
 });
+Route::post('/preview', [CertificateController::class, 'generatePreview'])->name('generatePreview');
+
+Route::get('/generate-excel',[ExcelController::class,'generateExcel'])->name('generateExcel');
